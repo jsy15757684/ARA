@@ -59,7 +59,7 @@ export async function POST(request: Request) {
 
       if (sessionCookie) {
         try {
-          user = JSON.parse(Buffer.from(sessionCookie, 'base64').toString('utf8'));
+          user = JSON.parse(Buffer.from(decodeURIComponent(sessionCookie), 'base64').toString('utf8'));
           
           // Fetch user's orders from Supabase
           const { data: dbOrders } = await supabaseAdmin

@@ -27,7 +27,7 @@ export default function Header() {
     if (sessionCookie) {
       try {
         // Handle UTF-8 decoding properly from base64
-        const decodedString = decodeURIComponent(escape(atob(sessionCookie)));
+        const decodedString = decodeURIComponent(escape(atob(decodeURIComponent(sessionCookie))));
         const decoded = JSON.parse(decodedString);
         setUser(decoded);
       } catch (e) {

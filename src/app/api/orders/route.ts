@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '유효하지 않은 세션입니다.' }, { status: 401 });
     }
 
-    const user = JSON.parse(Buffer.from(sessionCookie, 'base64').toString('utf8'));
+    const user = JSON.parse(Buffer.from(decodeURIComponent(sessionCookie), 'base64').toString('utf8'));
 
     // 2. Read Request Body
     const body = await request.json();

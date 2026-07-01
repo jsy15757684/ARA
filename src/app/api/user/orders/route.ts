@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     }
 
     // Decode user info
-    const user = JSON.parse(Buffer.from(sessionCookie, 'base64').toString('utf8'));
+    const user = JSON.parse(Buffer.from(decodeURIComponent(sessionCookie), 'base64').toString('utf8'));
 
     // Fetch user orders with items
     const { data: dbOrders, error: ordersError } = await supabaseAdmin

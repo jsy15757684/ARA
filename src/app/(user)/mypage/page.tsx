@@ -62,7 +62,7 @@ export default function MyPage() {
     }
 
     try {
-      const decodedString = decodeURIComponent(escape(atob(sessionCookie)));
+      const decodedString = decodeURIComponent(escape(atob(decodeURIComponent(sessionCookie))));
       const decoded = JSON.parse(decodedString);
       setUser(decoded);
       fetchOrders();
