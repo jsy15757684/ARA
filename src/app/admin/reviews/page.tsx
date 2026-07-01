@@ -223,13 +223,13 @@ export default function AdminReviewsPage() {
             <span className="font-semibold text-deep-navy">조회 기간:</span>
             {/* Presets */}
             <div className="flex gap-1.5 mr-2">
-              {[
+              {([
                 { label: '오늘', days: 0 },
                 { label: '1주일', days: 7 },
                 { label: '1개월', days: 30 },
                 { label: '3개월', days: 90 },
                 { label: '전체', days: 'all' }
-              ].map((btn: { label: string; days: number | 'all' }) => (
+              ] as { label: string; days: number | 'all' }[]).map(btn => (
                 <button
                   key={btn.label}
                   onClick={() => handleQuickDateSelect(btn.label, btn.days)}
