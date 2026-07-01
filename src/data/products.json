@@ -1,0 +1,619 @@
+[
+  {
+    "id": "F001",
+    "name": "프리미엄 리넨 블레이저",
+    "brand": "MAISON ÉLÉGANCE",
+    "category": "패션의류",
+    "price": 189000,
+    "originalPrice": 259000,
+    "discountRate": 27,
+    "image": "/images/products/blazer.png",
+    "images": [
+      "/images/products/blazer.png"
+    ],
+    "description": "통기성 좋은 프리미엄 리넨 소재로 제작된 클래식 블레이저. 세련된 실루엣으로 체형 커버와 스타일을 동시에.",
+    "specs": {
+      "소재": "리넨 100%",
+      "핏": "세미 오버핏",
+      "신축성": "논스트레치"
+    },
+    "options": [
+      {
+        "name": "사이즈",
+        "values": [
+          "S",
+          "M",
+          "L",
+          "XL"
+        ]
+      },
+      {
+        "name": "색상",
+        "values": [
+          "베이지",
+          "네이비"
+        ]
+      }
+    ],
+    "tags": [
+      "MD추천",
+      "인기"
+    ],
+    "rating": 4.8,
+    "reviewCount": 324,
+    "subcategory": "남성의류"
+  },
+  {
+    "id": "F002",
+    "name": "캐시미어 라운드넥 니트",
+    "brand": "MAISON ÉLÉGANCE",
+    "category": "패션의류",
+    "price": 129000,
+    "originalPrice": 169000,
+    "discountRate": 24,
+    "image": "/images/products/knit.png",
+    "images": [
+      "/images/products/knit.png"
+    ],
+    "description": "부드러운 캐시미어 블렌드 니트. 은은한 더스티 로즈 컬러로 여성스럽고 고급스러운 분위기를 연출합니다.",
+    "specs": {
+      "소재": "캐시미어 30%, 울 70%",
+      "핏": "레귤러핏",
+      "신축성": "적당한 신축성"
+    },
+    "options": [
+      {
+        "name": "사이즈",
+        "values": [
+          "S",
+          "M",
+          "L",
+          "XL"
+        ]
+      },
+      {
+        "name": "색상",
+        "values": [
+          "더스티 로즈",
+          "아이보리",
+          "그레이"
+        ]
+      }
+    ],
+    "tags": [
+      "신상품",
+      "베스트"
+    ],
+    "rating": 4.9,
+    "reviewCount": 512,
+    "subcategory": "여성의류"
+  },
+  {
+    "id": "F003",
+    "name": "와이드 핏 슬랙스",
+    "brand": "MAISON ÉLÉGANCE",
+    "category": "패션의류",
+    "price": 98000,
+    "originalPrice": 139000,
+    "discountRate": 30,
+    "image": "/images/products/pants.png",
+    "images": [
+      "/images/products/pants.png"
+    ],
+    "description": "세련된 와이드 핏으로 다리 라인을 자연스럽게 커버. 고급 울 블렌드 소재로 구김이 적고 실루엣이 아름답습니다.",
+    "specs": {
+      "소재": "울 70%, 폴리에스터 30%",
+      "핏": "와이드핏",
+      "신축성": "약간의 신축성"
+    },
+    "options": [
+      {
+        "name": "사이즈",
+        "values": [
+          "S",
+          "M",
+          "L",
+          "XL",
+          "XXL"
+        ]
+      },
+      {
+        "name": "색상",
+        "values": [
+          "네이비",
+          "차콜",
+          "베이지"
+        ]
+      }
+    ],
+    "tags": [
+      "할인",
+      "베스트"
+    ],
+    "rating": 4.7,
+    "reviewCount": 287,
+    "subcategory": "남성의류"
+  },
+  {
+    "id": "E001",
+    "name": "프리미엄 노이즈캔슬링 헤드폰",
+    "brand": "SOUND MASTER",
+    "category": "가전·디지털",
+    "price": 329000,
+    "originalPrice": 429000,
+    "discountRate": 23,
+    "image": "/images/products/headphones.png",
+    "images": [
+      "/images/products/headphones.png"
+    ],
+    "description": "최첨단 ANC 기술로 어디서든 몰입감 있는 사운드를 경험하세요. 30시간 연속 재생, 프리미엄 가죽 이어패드.",
+    "specs": {
+      "드라이버": "40mm 커스텀 드라이버",
+      "배터리": "30시간 (ANC ON)",
+      "연결": "Bluetooth 5.3, 3.5mm",
+      "무게": "250g"
+    },
+    "options": [
+      {
+        "name": "색상",
+        "values": [
+          "매트 블랙",
+          "실버",
+          "미드나이트 블루"
+        ]
+      }
+    ],
+    "tags": [
+      "MD추천",
+      "인기"
+    ],
+    "rating": 4.9,
+    "reviewCount": 1287,
+    "subcategory": "컴퓨터/디지털"
+  },
+  {
+    "id": "E002",
+    "name": "스마트 공기청정기 Pro",
+    "brand": "CLEAN AIR",
+    "category": "가전·디지털",
+    "price": 459000,
+    "originalPrice": 599000,
+    "discountRate": 23,
+    "image": "/images/products/air_purifier.png",
+    "images": [
+      "/images/products/air_purifier.png"
+    ],
+    "description": "초미세먼지 99.97% 제거. 스마트폰 연동으로 실시간 공기 질 모니터링. 저소음 슬립 모드 탑재.",
+    "specs": {
+      "적정면적": "66㎡ (20평)",
+      "필터": "H13 HEPA + 활성탄",
+      "소음": "최저 22dB",
+      "에너지등급": "1등급"
+    },
+    "options": [
+      {
+        "name": "색상",
+        "values": [
+          "화이트",
+          "그레이"
+        ]
+      }
+    ],
+    "tags": [
+      "신상품",
+      "할인"
+    ],
+    "rating": 4.7,
+    "reviewCount": 856,
+    "subcategory": "생활가전"
+  },
+  {
+    "id": "E003",
+    "name": "4K UHD 빔프로젝터",
+    "brand": "VIEW MASTER",
+    "category": "가전·디지털",
+    "price": 789000,
+    "originalPrice": 990000,
+    "discountRate": 20,
+    "image": "/images/products/projector.png",
+    "images": [
+      "/images/products/projector.png"
+    ],
+    "description": "4K 초고화질의 홈시네마 경험. 자동 키스톤 보정, 최대 120인치 스크린, 내장 스피커.",
+    "specs": {
+      "해상도": "3840x2160 (4K)",
+      "밝기": "2500 ANSI 루멘",
+      "투사거리": "1.2m~5m",
+      "스피커": "5W x 2"
+    },
+    "options": [
+      {
+        "name": "색상",
+        "values": [
+          "화이트",
+          "블랙"
+        ]
+      }
+    ],
+    "tags": [
+      "MD추천"
+    ],
+    "rating": 4.6,
+    "reviewCount": 423,
+    "subcategory": "TV/영상가전"
+  },
+  {
+    "id": "H001",
+    "name": "유기농 프리미엄 꿀 세트",
+    "brand": "HONEY FARM",
+    "category": "식품·건강",
+    "price": 45000,
+    "originalPrice": 59000,
+    "discountRate": 24,
+    "image": "/images/products/honey.png",
+    "images": [
+      "/images/products/honey.png"
+    ],
+    "description": "국내산 100% 유기농 아카시아 꿀과 밤꿀 세트. 고급 선물용 포장으로 감사의 마음을 전하세요.",
+    "specs": {
+      "용량": "아카시아 500g + 밤꿀 500g",
+      "원산지": "국내산 (강원도)",
+      "인증": "유기농 인증",
+      "유통기한": "제조일로부터 2년"
+    },
+    "options": [
+      {
+        "name": "구성",
+        "values": [
+          "2종 세트",
+          "3종 세트 (야생화 포함)"
+        ]
+      }
+    ],
+    "tags": [
+      "베스트",
+      "선물추천"
+    ],
+    "rating": 4.9,
+    "reviewCount": 2341,
+    "subcategory": "건강식품"
+  },
+  {
+    "id": "H002",
+    "name": "프로바이오틱스 유산균 골드",
+    "brand": "BIO HEALTH",
+    "category": "식품·건강",
+    "price": 39000,
+    "originalPrice": 52000,
+    "discountRate": 25,
+    "image": "/images/products/probiotics.png",
+    "images": [
+      "/images/products/probiotics.png"
+    ],
+    "description": "19종 복합 유산균 100억 CFU. 장 건강과 면역력 증진을 위한 프리미엄 프로바이오틱스.",
+    "specs": {
+      "함량": "100억 CFU",
+      "균주": "19종 복합 유산균",
+      "복용법": "1일 1회, 1포",
+      "용량": "60포 (2개월분)"
+    },
+    "options": [
+      {
+        "name": "용량",
+        "values": [
+          "60포 (2개월)",
+          "120포 (4개월)"
+        ]
+      }
+    ],
+    "tags": [
+      "인기",
+      "건강추천"
+    ],
+    "rating": 4.8,
+    "reviewCount": 3456,
+    "subcategory": "건강식품"
+  },
+  {
+    "id": "B001",
+    "name": "리바이탈라이징 세럼 앰플",
+    "brand": "GLOW LAB",
+    "category": "뷰티·향수",
+    "price": 68000,
+    "originalPrice": 89000,
+    "discountRate": 24,
+    "image": "/images/products/serum.png",
+    "images": [
+      "/images/products/serum.png"
+    ],
+    "description": "비타민C 20% 고농축 세럼. 칙칙한 피부에 생기를 더하고 잡티를 케어합니다. 피부과 전문의 추천.",
+    "specs": {
+      "용량": "30ml",
+      "주성분": "비타민C 20%, 나이아신아마이드",
+      "피부타입": "모든 피부",
+      "사용법": "아침/저녁 세안 후 2~3방울"
+    },
+    "options": [
+      {
+        "name": "용량",
+        "values": [
+          "30ml",
+          "50ml (대용량)"
+        ]
+      }
+    ],
+    "tags": [
+      "MD추천",
+      "베스트"
+    ],
+    "rating": 4.8,
+    "reviewCount": 1892,
+    "subcategory": "스킨케어"
+  },
+  {
+    "id": "B002",
+    "name": "시그니처 우드 오 드 퍼퓸",
+    "brand": "MAISON DE PARFUM",
+    "category": "뷰티·향수",
+    "price": 128000,
+    "originalPrice": 168000,
+    "discountRate": 24,
+    "image": "/images/products/perfume.png",
+    "images": [
+      "/images/products/perfume.png"
+    ],
+    "description": "은은한 우디 노트와 앰버의 조화. 깊고 세련된 향으로 하루 종일 은은하게 지속됩니다.",
+    "specs": {
+      "용량": "50ml",
+      "향 계열": "우디 앰버",
+      "지속시간": "8~10시간",
+      "원산지": "프랑스"
+    },
+    "options": [
+      {
+        "name": "용량",
+        "values": [
+          "30ml",
+          "50ml",
+          "100ml"
+        ]
+      }
+    ],
+    "tags": [
+      "신상품",
+      "선물추천"
+    ],
+    "rating": 4.7,
+    "reviewCount": 678,
+    "subcategory": "향수"
+  },
+  {
+    "id": "B003",
+    "name": "안티에이징 아이크림",
+    "brand": "GLOW LAB",
+    "category": "뷰티·향수",
+    "price": 58000,
+    "originalPrice": 79000,
+    "discountRate": 27,
+    "image": "/images/products/eye_cream.png",
+    "images": [
+      "/images/products/eye_cream.png"
+    ],
+    "description": "레티놀과 펩타이드 복합 성분으로 눈가 주름을 집중 케어. 탱탱하고 촉촉한 눈매를 완성합니다.",
+    "specs": {
+      "용량": "25ml",
+      "주성분": "레티놀 0.1%, 펩타이드 복합체",
+      "피부타입": "모든 피부",
+      "사용법": "아침/저녁 눈가에 소량 도포"
+    },
+    "options": [
+      {
+        "name": "용량",
+        "values": [
+          "15ml",
+          "25ml"
+        ]
+      }
+    ],
+    "tags": [
+      "인기",
+      "할인"
+    ],
+    "rating": 4.6,
+    "reviewCount": 934,
+    "subcategory": "스킨케어"
+  },
+  {
+    "id": "L001",
+    "name": "무선 아로마 디퓨저",
+    "brand": "HOME SENSE",
+    "category": "홈·리빙",
+    "price": 59000,
+    "originalPrice": 79000,
+    "discountRate": 25,
+    "image": "/images/products/diffuser.png",
+    "images": [
+      "/images/products/diffuser.png"
+    ],
+    "description": "충전식 무선 디퓨저. 세라믹 바디와 무드등 기능으로 인테리어 오브제로도 손색없습니다.",
+    "specs": {
+      "용량": "200ml",
+      "작동시간": "최대 8시간 (충전식)",
+      "조명": "7색 무드등",
+      "소재": "세라믹 + 대나무"
+    },
+    "options": [
+      {
+        "name": "색상",
+        "values": [
+          "화이트",
+          "그레이",
+          "우드톤"
+        ]
+      }
+    ],
+    "tags": [
+      "MD추천",
+      "인기"
+    ],
+    "rating": 4.8,
+    "reviewCount": 1456,
+    "subcategory": "인테리어"
+  },
+  {
+    "id": "L002",
+    "name": "프리미엄 극세사 이불 세트",
+    "brand": "COMFORT HOME",
+    "category": "홈·리빙",
+    "price": 149000,
+    "originalPrice": 199000,
+    "discountRate": 25,
+    "image": "/images/products/bedding.png",
+    "images": [
+      "/images/products/bedding.png"
+    ],
+    "description": "호텔급 극세사 이불과 베개 커버 세트. 부드럽고 보온성이 뛰어나 사계절 사용 가능합니다.",
+    "specs": {
+      "구성": "이불커버 1 + 베개커버 2",
+      "소재": "극세사 폴리에스터",
+      "사이즈": "S(싱글), Q(퀸), K(킹)",
+      "세탁": "세탁기 사용 가능"
+    },
+    "options": [
+      {
+        "name": "사이즈",
+        "values": [
+          "싱글",
+          "퀸",
+          "킹"
+        ]
+      },
+      {
+        "name": "색상",
+        "values": [
+          "아이보리",
+          "그레이",
+          "네이비"
+        ]
+      }
+    ],
+    "tags": [
+      "베스트",
+      "할인"
+    ],
+    "rating": 4.7,
+    "reviewCount": 2103,
+    "subcategory": "침구"
+  },
+  {
+    "id": "S001",
+    "name": "프로 트레킹 백팩 40L",
+    "brand": "OUTDOOR PRO",
+    "category": "스포츠·레저",
+    "price": 159000,
+    "originalPrice": 219000,
+    "discountRate": 27,
+    "image": "/images/products/backpack.png",
+    "images": [
+      "/images/products/backpack.png"
+    ],
+    "description": "인체공학적 설계의 경량 트레킹 백팩. 방수 원단과 다양한 수납 공간으로 아웃도어 활동에 최적.",
+    "specs": {
+      "용량": "40L",
+      "무게": "1.2kg",
+      "소재": "리플스탑 나일론 (방수)",
+      "기능": "레인커버 내장, 하이드레이션 호환"
+    },
+    "options": [
+      {
+        "name": "색상",
+        "values": [
+          "카키",
+          "블랙",
+          "네이비"
+        ]
+      }
+    ],
+    "tags": [
+      "MD추천",
+      "신상품"
+    ],
+    "rating": 4.8,
+    "reviewCount": 567,
+    "subcategory": "캠핑/아웃도어"
+  },
+  {
+    "id": "S002",
+    "name": "스마트 요가매트 프리미엄",
+    "brand": "FIT LIFE",
+    "category": "스포츠·레저",
+    "price": 69000,
+    "originalPrice": 89000,
+    "discountRate": 22,
+    "image": "/images/products/yoga_mat.png",
+    "images": [
+      "/images/products/yoga_mat.png"
+    ],
+    "description": "TPE 친환경 소재의 미끄럼 방지 요가매트. 체중 분산 가이드 라인으로 올바른 자세를 도와줍니다.",
+    "specs": {
+      "두께": "8mm",
+      "소재": "TPE (친환경)",
+      "사이즈": "183 x 68cm",
+      "무게": "1.5kg"
+    },
+    "options": [
+      {
+        "name": "색상",
+        "values": [
+          "라벤더",
+          "민트",
+          "차콜"
+        ]
+      }
+    ],
+    "tags": [
+      "인기",
+      "베스트"
+    ],
+    "rating": 4.7,
+    "reviewCount": 1890,
+    "subcategory": "피트니스"
+  },
+  {
+    "id": "S003",
+    "name": "무선 블루투스 스포츠 이어폰",
+    "brand": "SOUND MASTER",
+    "category": "스포츠·레저",
+    "price": 89000,
+    "originalPrice": 129000,
+    "discountRate": 31,
+    "image": "/images/products/sports_earphones.png",
+    "images": [
+      "/images/products/sports_earphones.png"
+    ],
+    "description": "IPX7 방수 등급의 스포츠 전용 이어폰. 안정적인 이어훅으로 격한 운동에도 흔들리지 않습니다.",
+    "specs": {
+      "방수등급": "IPX7",
+      "배터리": "10시간 (케이스 포함 40시간)",
+      "무게": "6g (이어버드)",
+      "연결": "Bluetooth 5.2"
+    },
+    "options": [
+      {
+        "name": "색상",
+        "values": [
+          "블랙",
+          "화이트",
+          "레드"
+        ]
+      }
+    ],
+    "tags": [
+      "할인",
+      "베스트"
+    ],
+    "rating": 4.6,
+    "reviewCount": 2345,
+    "subcategory": "피트니스"
+  }
+]

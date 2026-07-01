@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@theme {
+  /* Premium warm palette for 40-50 age group */
+  --color-warm-beige: #F5F0EB;
+  --color-deep-navy: #1B2A4A;
+  --color-soft-gold: #C9A96E;
+  --color-warm-gray: #6B6560;
+  --color-cream: #FAF7F2;
+  --color-light-beige: #EDE6DD;
+  --color-accent-red: #C25450;
+  --color-success: #5A8F6A;
+  --color-surface: #FFFFFF;
+
+  /* Font sizing optimized for 40-50 audience */
+  --font-size-base: 1.125rem;   /* 18px base */
+  --font-size-sm: 1rem;          /* 16px */
+  --font-size-lg: 1.25rem;       /* 20px */
+  --font-size-xl: 1.5rem;        /* 24px */
+  --font-size-2xl: 1.875rem;     /* 30px */
+  --font-size-3xl: 2.25rem;      /* 36px */
+}
+
+@layer base {
+  html {
+    font-size: 18px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-warm-beige text-deep-navy;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.7;
+    letter-spacing: -0.01em;
+  }
+
+  /* High-contrast links */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Larger tap targets for 40-50 users */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@layer components {
+  .section-title {
+    @apply text-xl font-bold text-deep-navy tracking-tight;
+    letter-spacing: -0.02em;
+  }
+
+  .price-original {
+    @apply line-through text-warm-gray text-sm;
+  }
+
+  .price-sale {
+    @apply text-accent-red font-bold text-lg;
+  }
+
+  .discount-badge {
+    @apply inline-flex items-center px-2 py-0.5 bg-accent-red text-white text-sm font-bold rounded;
+  }
+
+  .btn-primary {
+    @apply bg-deep-navy text-white font-semibold py-4 px-8 rounded-xl
+           transition-all duration-200 hover:bg-deep-navy/90 active:scale-[0.98]
+           text-lg tracking-tight;
+  }
+
+  .btn-secondary {
+    @apply bg-soft-gold text-white font-semibold py-4 px-8 rounded-xl
+           transition-all duration-200 hover:bg-soft-gold/90 active:scale-[0.98]
+           text-lg tracking-tight;
+  }
+
+  .card {
+    @apply bg-surface rounded-2xl overflow-hidden shadow-sm
+           transition-all duration-300 hover:shadow-md hover:-translate-y-0.5;
+  }
+}
+
+/* Smooth page transitions */
+@layer utilities {
+  .fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #C9A96E44;
+  border-radius: 999px;
+}
+
+/* Safe area for mobile bottom tab */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .safe-bottom {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+  }
+}

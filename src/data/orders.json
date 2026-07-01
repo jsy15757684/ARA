@@ -1,0 +1,98 @@
+[
+  {
+    "id": "ORD-20231015-001",
+    "createdAt": "2023-10-15T08:23:00Z",
+    "customerName": "김철수",
+    "customerPhone": "010-1234-5678",
+    "totalPrice": 189000,
+    "status": "결제완료",
+    "items": [
+      {
+        "productId": "F001",
+        "productName": "프리미엄 리넨 블레이저",
+        "quantity": 1,
+        "price": 189000,
+        "options": {
+          "사이즈": "L",
+          "색상": "네이비"
+        },
+        "image": "/images/products/blazer.png"
+      }
+    ],
+    "shippingAddress": "서울특별시 강남구 테헤란로 123, 10층 (역삼동)"
+  },
+  {
+    "id": "ORD-20231015-002",
+    "createdAt": "2023-10-15T11:45:00Z",
+    "customerName": "이영희",
+    "customerPhone": "010-9876-5432",
+    "totalPrice": 169000,
+    "status": "배송중",
+    "items": [
+      {
+        "productId": "F002",
+        "productName": "캐시미어 라운드넥 니트",
+        "quantity": 1,
+        "price": 129000,
+        "options": {
+          "사이즈": "M",
+          "색상": "더스티 로즈"
+        },
+        "image": "/images/products/knit.png"
+      },
+      {
+        "productId": "H002",
+        "productName": "프로바이오틱스 유산균 골드",
+        "quantity": 1,
+        "price": 40000,
+        "options": {
+          "용량": "60포 (2개월)"
+        },
+        "image": "/images/products/blouse.png"
+      }
+    ],
+    "shippingAddress": "부산광역시 해운대구 마린시티2로 33, 101동 2001호"
+  },
+  {
+    "id": "ORD-20231014-003",
+    "createdAt": "2023-10-14T15:30:00Z",
+    "customerName": "박민수",
+    "customerPhone": "010-5555-4444",
+    "totalPrice": 329000,
+    "status": "배송완료",
+    "items": [
+      {
+        "productId": "E001",
+        "productName": "프리미엄 노이즈캔슬링 헤드폰",
+        "quantity": 1,
+        "price": 329000,
+        "options": {
+          "색상": "매트 블랙"
+        },
+        "image": "/images/products/headphones.png"
+      }
+    ],
+    "shippingAddress": "경기도 성남시 분당구 판교역로 146, 5층"
+  },
+  {
+    "id": "ORD-20231016-004",
+    "createdAt": "2023-10-16T09:15:00Z",
+    "customerName": "정수진",
+    "customerPhone": "010-1111-2222",
+    "totalPrice": 45000,
+    "status": "결제대기",
+    "items": [
+      {
+        "productId": "H001",
+        "productName": "유기농 프리미엄 꿀 세트",
+        "quantity": 1,
+        "price": 45000,
+        "options": {
+          "구성": "2종 세트"
+        },
+        "image": "/images/products/dress.png"
+      }
+    ],
+    "shippingAddress": "대구광역시 수성구 달구벌대로 2345, 102동 1502호"
+  }
+]
