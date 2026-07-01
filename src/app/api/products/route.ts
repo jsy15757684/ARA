@@ -8,6 +8,8 @@ export function mapProduct(p: any) {
     ...p,
     originalPrice: p.original_price,
     discountRate: p.discount_rate,
+    rating: p.rating ?? 5.0,
+    reviewCount: p.review_count ?? p.reviewCount ?? 0
   };
 }
 
