@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-
-const dataFilePath = path.join(process.cwd(), 'src', 'data', 'users.json');
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
@@ -12,34 +9,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '모든 필드를 입력해주세요.' }, { status: 400 });
     }
 
-    let fileContents = '[]';
-    try {
-      fileContents = await fs.readFile(dataFilePath, 'utf8');
-    } catch (e) {
-      // File doesn't exist, which is fine
-    }
+    // 1. Check if user already exists
+    const { data: existingUser } = await supabaseAdmin
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
 
-    const users = JSON.parse(fileContents);
-    
-    // Check if user already exists
-    if (users.find((u: any) => u.email === email)) {
+    if (existingUser) {
       return NextResponse.json({ error: '이미 존재하는 이메일입니다.' }, { status: 409 });
     }
 
-    // In a real app, hash password here. We just store plain text for the demo.
+    // 2. Insert new user
     const newUser = {
-      id: Date.now().toString(),
       email,
-      password, // DO NOT DO THIS IN PRODUCTION
+      password, // Plain text for demo
       name,
-      createdAt: new Date().toISOString()
+      role: email === 'admin@leschoses.com' || email.includes('admin') ? 'admin' : 'user'
     };
 
-    users.push(newUser);
-    await fs.writeFile(dataFilePath, JSON.stringify(users, null, 2), 'utf8');
+    const { error } = await supabaseAdmin
+      .from('users')
+      .insert(newUser);
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true, message: '회원가입이 완료되었습니다.' });
-  } catch (error) {
-    return NextResponse.json({ error: '서버 오류가 발생했습니다.' }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || '서버 오류가 발생했습니다.' }, { status: 500 });
   }
 }

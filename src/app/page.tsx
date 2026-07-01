@@ -1,9 +1,19 @@
 import HeroBanner from '@/components/home/HeroBanner';
 import CategoryGrid from '@/components/home/CategoryGrid';
 import CurationSection from '@/components/home/CurationSection';
-import { products, getProductsByTag } from '@/lib/mock-data';
+import { supabase } from '@/lib/supabase';
+import { mapProduct } from '@/app/api/products/route';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { data } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  const productsList = data ? data.map(mapProduct) : [];
+
+  const getProductsByTag = (tag: string) => productsList.filter(p => p.tags && p.tags.includes(tag));
+
   const mdPicks = getProductsByTag('MD추천');
   const popular = getProductsByTag('인기');
   const bestItems = getProductsByTag('베스트');

@@ -1,12 +1,29 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { supabaseAdmin } from '@/lib/supabase';
 
-const dataFilePath = path.join(process.cwd(), 'src', 'data', 'orders.json');
-
-async function getOrders() {
-  const fileContents = await fs.readFile(dataFilePath, 'utf8');
-  return JSON.parse(fileContents);
+export function mapOrder(o: any, items: any[] = []) {
+  if (!o) return o;
+  return {
+    id: o.id,
+    createdAt: o.created_at,
+    customerName: o.customer_name,
+    customerPhone: o.customer_phone,
+    shippingAddress: o.shipping_address,
+    totalPrice: Number(o.total_price),
+    status: o.status,
+    requestType: o.request_type,
+    requestReason: o.request_reason,
+    trackingNumber: o.tracking_number,
+    courierName: o.courier_name,
+    items: items.map(i => ({
+      productId: i.product_id,
+      productName: i.product_name,
+      quantity: i.quantity,
+      price: Number(i.price),
+      options: i.options,
+      image: i.image
+    }))
+  };
 }
 
 export async function PUT(
@@ -15,23 +32,39 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const { status, requestType, requestReason } = await request.json();
-    const orders = await getOrders();
-    
-    const index = orders.findIndex((o: any) => o.id === id);
-    if (index === -1) {
-      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    const body = await request.json();
+    const { status, requestType, requestReason, trackingNumber, courierName } = body;
+
+    const updatePayload: any = {};
+    if (status !== undefined) updatePayload.status = status;
+    if (requestType !== undefined) updatePayload.request_type = requestType;
+    if (requestReason !== undefined) updatePayload.request_reason = requestReason;
+    if (trackingNumber !== undefined) updatePayload.tracking_number = trackingNumber;
+    if (courierName !== undefined) updatePayload.courier_name = courierName;
+
+    const { data: order, error } = await supabaseAdmin
+      .from('orders')
+      .update(updatePayload)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+      }
+      throw error;
     }
-    
-    orders[index].status = status;
-    if (requestType !== undefined) orders[index].requestType = requestType;
-    if (requestReason !== undefined) orders[index].requestReason = requestReason;
-    
-    await fs.writeFile(dataFilePath, JSON.stringify(orders, null, 2), 'utf8');
-    
-    return NextResponse.json(orders[index]);
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to update order status' }, { status: 500 });
+
+    // Fetch items
+    const { data: items } = await supabaseAdmin
+      .from('order_items')
+      .select('*')
+      .eq('order_id', id);
+
+    return NextResponse.json(mapOrder(order, items || []));
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Failed to update order status' }, { status: 500 });
   }
 }
 
@@ -41,18 +74,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const orders = await getOrders();
-    
-    const filteredOrders = orders.filter((o: any) => o.id !== id);
-    
-    if (orders.length === filteredOrders.length) {
-      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-    }
-    
-    await fs.writeFile(dataFilePath, JSON.stringify(filteredOrders, null, 2), 'utf8');
-    
+
+    const { error } = await supabaseAdmin
+      .from('orders')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
     return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to delete order' }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Failed to delete order' }, { status: 500 });
   }
 }

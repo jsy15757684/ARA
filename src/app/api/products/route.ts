@@ -1,27 +1,45 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { supabase, supabaseAdmin } from '@/lib/supabase';
 
-const dataFilePath = path.join(process.cwd(), 'src', 'data', 'products.json');
+// Map database snake_case columns to camelCase expected by the client
+export function mapProduct(p: any) {
+  if (!p) return p;
+  return {
+    ...p,
+    originalPrice: p.original_price,
+    discountRate: p.discount_rate,
+  };
+}
 
-async function getProducts() {
-  const fileContents = await fs.readFile(dataFilePath, 'utf8');
-  return JSON.parse(fileContents);
+// Map camelCase fields to snake_case for DB insertions/updates
+export function unmapProduct(p: any) {
+  if (!p) return p;
+  const { originalPrice, discountRate, ...rest } = p;
+  return {
+    ...rest,
+    original_price: originalPrice,
+    discount_rate: discountRate,
+  };
 }
 
 export async function GET() {
   try {
-    const products = await getProducts();
-    return NextResponse.json(products);
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    return NextResponse.json(data ? data.map(mapProduct) : []);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Failed to fetch products' }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   try {
     const newProduct = await request.json();
-    const products = await getProducts();
     
     // Generate a simple ID if not provided
     if (!newProduct.id) {
@@ -29,11 +47,17 @@ export async function POST(request: Request) {
       newProduct.id = `${prefix}${Date.now().toString().slice(-4)}`;
     }
     
-    products.push(newProduct);
-    await fs.writeFile(dataFilePath, JSON.stringify(products, null, 2), 'utf8');
-    
-    return NextResponse.json(newProduct, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to add product' }, { status: 500 });
+    const dbPayload = unmapProduct(newProduct);
+    const { data, error } = await supabaseAdmin
+      .from('products')
+      .insert(dbPayload)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json(mapProduct(data), { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Failed to add product' }, { status: 500 });
   }
 }

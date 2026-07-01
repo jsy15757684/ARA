@@ -1,16 +1,34 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { supabaseAdmin } from '@/lib/supabase';
 
-const reviewsFilePath = path.join(process.cwd(), 'src', 'data', 'reviews.json');
+export function mapReview(r: any) {
+  if (!r) return r;
+  return {
+    id: r.id,
+    productId: r.product_id,
+    productName: r.product_name,
+    userName: r.user_name,
+    rating: r.rating,
+    content: r.content,
+    reply: r.reply,
+    repliedAt: r.replied_at,
+    createdAt: r.created_at,
+    status: r.reply ? 'replied' : 'pending'
+  };
+}
 
 export async function GET() {
   try {
-    const fileContents = await fs.readFile(reviewsFilePath, 'utf8');
-    const reviews = JSON.parse(fileContents);
-    return NextResponse.json(reviews);
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch reviews' }, { status: 500 });
+    const { data: dbReviews, error } = await supabaseAdmin
+      .from('reviews')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    return NextResponse.json(dbReviews ? dbReviews.map(mapReview) : []);
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Failed to fetch reviews' }, { status: 500 });
   }
 }
 
@@ -19,21 +37,25 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { id, reply } = body;
 
-    const fileContents = await fs.readFile(reviewsFilePath, 'utf8');
-    let reviews = JSON.parse(fileContents);
+    const { data: updatedReview, error } = await supabaseAdmin
+      .from('reviews')
+      .update({
+        reply,
+        replied_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single();
 
-    const reviewIndex = reviews.findIndex((r: any) => r.id === id);
-    if (reviewIndex === -1) {
-      return NextResponse.json({ error: 'Review not found' }, { status: 404 });
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Review not found' }, { status: 404 });
+      }
+      throw error;
     }
 
-    reviews[reviewIndex].reply = reply;
-    reviews[reviewIndex].status = 'replied';
-
-    await fs.writeFile(reviewsFilePath, JSON.stringify(reviews, null, 2), 'utf8');
-
-    return NextResponse.json({ success: true, review: reviews[reviewIndex] });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to update review' }, { status: 500 });
+    return NextResponse.json({ success: true, review: mapReview(updatedReview) });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Failed to update review' }, { status: 500 });
   }
 }

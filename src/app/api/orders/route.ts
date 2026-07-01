@@ -1,12 +1,9 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-
-const ordersFilePath = path.join(process.cwd(), 'src', 'data', 'orders.json');
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
-    // 1. Check Authentication (Optional for guest checkout, but we enforce it here)
+    // 1. Check Authentication
     const cookieHeader = request.headers.get('cookie');
     if (!cookieHeader || !cookieHeader.includes('auth_session=')) {
       return NextResponse.json({ error: '인증이 필요합니다.' }, { status: 401 });
@@ -31,36 +28,47 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '결제할 상품이 없습니다.' }, { status: 400 });
     }
 
-    // 3. Read Existing Orders
-    let orders = [];
-    try {
-      const fileContents = await fs.readFile(ordersFilePath, 'utf8');
-      orders = JSON.parse(fileContents);
-    } catch (e) {
-      orders = [];
+    const orderId = `ORD-${new Date().toISOString().split('T')[0].replace(/-/g, '')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+
+    // 3. Insert Order metadata
+    const { error: orderError } = await supabaseAdmin
+      .from('orders')
+      .insert({
+        id: orderId,
+        user_id: user.id,
+        customer_name: customerName || user.name,
+        customer_phone: customerPhone,
+        shipping_address: shippingAddress,
+        total_price: totalPrice,
+        status: '결제완료'
+      });
+
+    if (orderError) throw orderError;
+
+    // 4. Insert Order Items (transaction-like rollback if failed)
+    const dbItems = items.map((item: any) => ({
+      order_id: orderId,
+      product_id: item.productId,
+      product_name: item.productName,
+      quantity: item.quantity,
+      price: item.price,
+      options: item.options,
+      image: item.image
+    }));
+
+    const { error: itemsError } = await supabaseAdmin
+      .from('order_items')
+      .insert(dbItems);
+
+    if (itemsError) {
+      // Rollback order
+      await supabaseAdmin.from('orders').delete().eq('id', orderId);
+      throw itemsError;
     }
 
-    // 4. Create New Order
-    const newOrder = {
-      id: `ORD-${new Date().toISOString().split('T')[0].replace(/-/g, '')}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
-      createdAt: new Date().toISOString(),
-      customerName: customerName || user.name, // Use provided name, fallback to user name
-      customerPhone: customerPhone,
-      totalPrice: totalPrice,
-      status: '결제완료',
-      items: items,
-      shippingAddress: shippingAddress
-    };
-
-    // Add to beginning of the array
-    orders.unshift(newOrder);
-
-    // 5. Save Back to File
-    await fs.writeFile(ordersFilePath, JSON.stringify(orders, null, 2), 'utf8');
-
-    return NextResponse.json({ success: true, orderId: newOrder.id });
-  } catch (error) {
+    return NextResponse.json({ success: true, orderId: orderId });
+  } catch (error: any) {
     console.error('Order creation failed:', error);
-    return NextResponse.json({ error: '주문 처리에 실패했습니다.' }, { status: 500 });
+    return NextResponse.json({ error: error.message || '주문 처리에 실패했습니다.' }, { status: 500 });
   }
 }

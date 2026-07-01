@@ -1,9 +1,9 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import ProductCard from '@/components/ui/ProductCard';
-import { products, categories, categoryTree, getProductsByCategory } from '@/lib/mock-data';
+import { Product, categories, categoryTree } from '@/lib/mock-data';
 import Link from 'next/link';
 
 function CategoryContent() {
@@ -12,22 +12,46 @@ function CategoryContent() {
   const selectedSub = searchParams.get('sub');
   const searchQuery = searchParams.get('search');
 
-  let displayProducts = products;
+  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        setProductsList(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  let displayProducts = productsList;
 
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
     displayProducts = displayProducts.filter(p => 
       p.name.toLowerCase().includes(q) || 
       p.brand.toLowerCase().includes(q) || 
-      p.tags.some(t => t.toLowerCase().includes(q))
+      (p.tags && p.tags.some(t => t.toLowerCase().includes(q)))
     );
   } else if (selectedSub) {
-    displayProducts = products.filter(p => p.subcategory === selectedSub);
+    displayProducts = productsList.filter(p => p.subcategory === selectedSub);
   } else if (selectedCat) {
-    displayProducts = getProductsByCategory(selectedCat);
+    displayProducts = productsList.filter(p => p.category === selectedCat);
   }
 
   const currentCategoryTree = categoryTree.find(c => c.name === selectedCat);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-warm-gray">로딩 중...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="fade-in max-w-7xl mx-auto px-4 py-6">

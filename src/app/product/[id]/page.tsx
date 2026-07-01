@@ -1,34 +1,61 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
-import { getProductById } from '@/lib/mock-data';
 import { useCart } from '@/lib/cart-context';
 import ImageSlider from '@/components/product/ImageSlider';
 import ProductInfo from '@/components/product/ProductInfo';
 import StickyBuyBar from '@/components/product/StickyBuyBar';
 import CurationSection from '@/components/home/CurationSection';
-import { products } from '@/lib/mock-data';
+import { Product } from '@/lib/mock-data';
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const product = getProductById(id);
   const { addItem } = useCart();
 
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
-    const defaults: Record<string, string> = {};
+  const [product, setProduct] = useState<Product | null>(null);
+  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    setLoading(true);
+    Promise.all([
+      fetch(`/api/products/${id}`).then(res => res.ok ? res.json() : null),
+      fetch('/api/products').then(res => res.ok ? res.json() : [])
+    ]).then(([prod, list]) => {
+      setProduct(prod);
+      setProductsList(list);
+      setLoading(false);
+    }).catch(err => {
+      console.error(err);
+      setLoading(false);
+    });
+  }, [id]);
+
+  useEffect(() => {
     if (product?.options) {
+      const defaults: Record<string, string> = {};
       for (const option of product.options) {
         if (option.values.length > 0) {
           defaults[option.name] = option.values[0];
         }
       }
+      setSelectedOptions(defaults);
     }
-    return defaults;
-  });
-  const [showToast, setShowToast] = useState(false);
+  }, [product]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-warm-gray">로딩 중...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     notFound();
@@ -50,7 +77,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
   };
 
   // Related products (same category, excluding self)
-  const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const related = productsList.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
   return (
     <div className="fade-in pb-24">
@@ -79,8 +106,6 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           onOptionChange={handleOptionChange}
         />
       </div>
-
-
 
       {/* Related products */}
       {related.length > 0 && (

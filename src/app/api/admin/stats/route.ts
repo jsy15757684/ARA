@@ -1,24 +1,26 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-
-const ordersFilePath = path.join(process.cwd(), 'src', 'data', 'orders.json');
-const usersFilePath = path.join(process.cwd(), 'src', 'data', 'users.json');
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    const [ordersFile, usersFile] = await Promise.all([
-      fs.readFile(ordersFilePath, 'utf8').catch(() => '[]'),
-      fs.readFile(usersFilePath, 'utf8').catch(() => '[]')
-    ]);
+    const { data: orders, error: ordersError } = await supabaseAdmin
+      .from('orders')
+      .select('*, order_items(*)');
 
-    const orders = JSON.parse(ordersFile);
-    const users = JSON.parse(usersFile);
+    if (ordersError) throw ordersError;
+
+    const { count: totalUsers, error: usersError } = await supabaseAdmin
+      .from('users')
+      .select('*', { count: 'exact', head: true });
+
+    if (usersError) throw usersError;
+
+    const safeOrders = orders || [];
+    const safeUsersCount = totalUsers || 0;
 
     // 1. Key Metrics
-    const totalOrders = orders.length;
-    const totalRevenue = orders.reduce((sum: number, order: any) => sum + order.totalPrice, 0);
-    const totalUsers = users.length;
+    const totalOrders = safeOrders.length;
+    const totalRevenue = safeOrders.reduce((sum: number, order: any) => sum + Number(order.total_price), 0);
     const averageOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
 
     // 2. Sales Trend (Last 7 days)
@@ -30,8 +32,8 @@ export async function GET() {
     });
 
     const salesTrend = last7Days.map(date => {
-      const dayOrders = orders.filter((o: any) => o.createdAt.startsWith(date));
-      const revenue = dayOrders.reduce((sum: number, o: any) => sum + o.totalPrice, 0);
+      const dayOrders = safeOrders.filter((o: any) => o.created_at.startsWith(date));
+      const revenue = dayOrders.reduce((sum: number, o: any) => sum + Number(o.total_price), 0);
       return {
         date: date.slice(5), // MM-DD
         revenue
@@ -40,11 +42,11 @@ export async function GET() {
 
     // 3. Best Sellers
     const productSales: Record<string, { name: string, quantity: number, revenue: number }> = {};
-    orders.forEach((order: any) => {
-      order.items?.forEach((item: any) => {
-        const id = item.productId || item.product?.id;
-        const name = item.productName || item.product?.name;
-        const price = item.price || item.product?.price || 0;
+    safeOrders.forEach((order: any) => {
+      order.order_items?.forEach((item: any) => {
+        const id = item.product_id;
+        const name = item.product_name;
+        const price = Number(item.price) || 0;
         
         if (!id) return;
 
@@ -68,15 +70,15 @@ export async function GET() {
       metrics: {
         totalOrders,
         totalRevenue,
-        totalUsers,
+        totalUsers: safeUsersCount,
         averageOrderValue
       },
       salesTrend,
       bestSellers
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch stats:', error);
-    return NextResponse.json({ error: 'Failed to fetch stats' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Failed to fetch stats' }, { status: 500 });
   }
 }
