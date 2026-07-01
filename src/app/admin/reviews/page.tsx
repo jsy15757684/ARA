@@ -229,7 +229,7 @@ export default function AdminReviewsPage() {
                 { label: '1개월', days: 30 },
                 { label: '3개월', days: 90 },
                 { label: '전체', days: 'all' }
-              ].map(btn => (
+              ].map((btn: { label: string; days: number | 'all' }) => (
                 <button
                   key={btn.label}
                   onClick={() => handleQuickDateSelect(btn.label, btn.days)}
