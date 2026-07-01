@@ -104,6 +104,8 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           product={product}
           selectedOptions={selectedOptions}
           onOptionChange={handleOptionChange}
+          onAddToCart={handleAddToCart}
+          onBuyNow={handleBuyNow}
         />
       </div>
 

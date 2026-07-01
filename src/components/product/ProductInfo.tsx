@@ -1,19 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import { Star, Info, Heart, Share2 } from 'lucide-react';
+import { Star, Info, Heart, Share2, ShoppingBag, CreditCard } from 'lucide-react';
 import { Product, formatPrice } from '@/lib/mock-data';
 
 interface ProductInfoProps {
   product: Product;
   selectedOptions: Record<string, string>;
   onOptionChange: (optionName: string, value: string) => void;
+  onAddToCart?: () => void;
+  onBuyNow?: () => void;
 }
 
 export default function ProductInfo({
   product,
   selectedOptions,
   onOptionChange,
+  onAddToCart,
+  onBuyNow,
 }: ProductInfoProps) {
   const [isWished, setIsWished] = useState(false);
 
@@ -113,6 +117,28 @@ export default function ProductInfo({
           </div>
         </div>
       ))}
+
+      {/* Desktop Buy/Cart buttons */}
+      {onAddToCart && onBuyNow && (
+        <div className="hidden md:flex items-center gap-3 mt-8 pb-8 border-b border-light-beige">
+          <button
+            onClick={onAddToCart}
+            className="flex-1 flex items-center justify-center gap-2 bg-cream border-2 border-deep-navy
+                       text-deep-navy font-semibold py-3.5 px-4 rounded-xl text-base
+                       hover:bg-deep-navy hover:text-white transition-all active:scale-[0.98] min-h-0"
+          >
+            <ShoppingBag className="w-5 h-5" />
+            장바구니 담기
+          </button>
+          <button
+            onClick={onBuyNow}
+            className="flex-1 flex items-center justify-center gap-2 btn-primary py-3.5 px-4 text-base"
+          >
+            <CreditCard className="w-5 h-5" />
+            바로 구매하기
+          </button>
+        </div>
+      )}
 
       {/* Full specs */}
       {specEntries.length > 0 && (
