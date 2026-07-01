@@ -21,6 +21,7 @@ export function unmapProduct(p: any) {
     ...rest,
     original_price: originalPrice,
     discount_rate: discountRate,
+    subcategory: p.subcategory ?? p.category ?? '기타',
   };
 }
 

@@ -191,8 +191,15 @@ export default function ProductForm({ initialData }: ProductFormProps) {
     }));
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    const target = e.target as HTMLElement;
+    if (e.key === 'Enter' && target.tagName !== 'TEXTAREA') {
+      e.preventDefault();
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto pb-12">
+    <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="max-w-4xl mx-auto pb-12">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <Link href="/admin/products" className="p-2 -ml-2 rounded-xl hover:bg-gray-100 transition-colors">
