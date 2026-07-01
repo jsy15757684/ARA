@@ -8,6 +8,7 @@ export function mapReview(r: any) {
     productId: r.product_id,
     productName: r.product_name,
     userName: r.user_name,
+    customerName: r.user_name,
     rating: r.rating,
     content: r.content,
     reply: r.reply,
