@@ -63,7 +63,7 @@ export const categoryTree = [
 ];
 
 import productsData from '../data/products.json';
-export const products: Product[] = productsData as Product[];
+export const products: Product[] = (productsData as unknown) as Product[];
 
 export function getProductById(id: string): Product | undefined {
   return products.find(p => p.id === id);
