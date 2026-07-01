@@ -11,33 +11,33 @@ interface StickyBuyBarProps {
 
 export default function StickyBuyBar({ price, onAddToCart, onBuyNow }: StickyBuyBarProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-light-beige
-                    px-4 py-3 md:py-4 safe-bottom">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-light-beige
+                    px-4 py-2.5 safe-bottom">
       <div className="max-w-7xl mx-auto flex items-center gap-3">
         {/* Price display */}
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-warm-gray">결제 금액</p>
-          <p className="text-xl font-bold text-deep-navy truncate">{formatPrice(price)}</p>
+          <p className="text-[10px] text-warm-gray leading-none mb-0.5">결제 금액</p>
+          <p className="text-base font-bold text-deep-navy truncate leading-tight">{formatPrice(price)}</p>
         </div>
 
         {/* Cart button */}
         <button
           onClick={onAddToCart}
-          className="flex items-center justify-center gap-2 bg-cream border-2 border-deep-navy
-                     text-deep-navy font-semibold py-3.5 px-5 rounded-xl text-base
+          className="flex items-center justify-center gap-1.5 bg-cream border border-deep-navy
+                     text-deep-navy font-semibold py-2.5 px-4 rounded-xl text-sm
                      hover:bg-deep-navy hover:text-white transition-all active:scale-[0.98]"
         >
-          <ShoppingBag className="w-5 h-5" />
-          <span className="hidden sm:inline">장바구니</span>
+          <ShoppingBag className="w-4 h-4" />
+          <span>장바구니</span>
         </button>
 
         {/* Buy now button */}
         <button
           onClick={onBuyNow}
-          className="flex items-center justify-center gap-2 btn-primary py-3.5 px-6 flex-1 max-w-[200px] text-base"
+          className="flex items-center justify-center gap-1.5 btn-primary py-2.5 px-4 flex-1 max-w-[150px] text-sm"
         >
-          <CreditCard className="w-5 h-5" />
-          바로 구매
+          <CreditCard className="w-4 h-4" />
+          <span>바로 구매</span>
         </button>
       </div>
     </div>

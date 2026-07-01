@@ -80,7 +80,7 @@ export default function AIChatbot() {
 
   return (
     <div className={`fixed right-6 z-50 flex flex-col items-end pointer-events-none transition-all duration-300 ${
-      isProductPage ? 'bottom-[90px] md:bottom-28' : 'bottom-6'
+      isProductPage ? 'bottom-[75px] md:bottom-6' : 'bottom-6'
     }`}>
       
       {/* Chat Window */}
