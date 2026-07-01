@@ -152,6 +152,45 @@ export default function ProductForm({ initialData }: ProductFormProps) {
     }
   };
 
+  const handleOriginalPriceChange = (val: number) => {
+    const discountRate = formData.discountRate || 0;
+    const calculatedPrice = discountRate > 0 
+      ? Math.round(val * (1 - discountRate / 100)) 
+      : (formData.price || 0);
+
+    setFormData(prev => ({
+      ...prev,
+      originalPrice: val,
+      price: calculatedPrice
+    }));
+  };
+
+  const handleDiscountRateChange = (val: number) => {
+    const originalPrice = formData.originalPrice || 0;
+    const calculatedPrice = originalPrice > 0 
+      ? Math.round(originalPrice * (1 - val / 100)) 
+      : (formData.price || 0);
+
+    setFormData(prev => ({
+      ...prev,
+      discountRate: val,
+      price: calculatedPrice
+    }));
+  };
+
+  const handlePriceChange = (val: number) => {
+    const originalPrice = formData.originalPrice || 0;
+    const calculatedDiscountRate = (originalPrice > 0 && originalPrice > val)
+      ? Math.round(((originalPrice - val) / originalPrice) * 100)
+      : 0;
+
+    setFormData(prev => ({
+      ...prev,
+      price: val,
+      discountRate: calculatedDiscountRate
+    }));
+  };
+
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl mx-auto pb-12">
       <div className="flex items-center justify-between mb-8">
@@ -249,7 +288,7 @@ export default function ProductForm({ initialData }: ProductFormProps) {
                   type="number"
                   required
                   value={formData.price}
-                  onChange={e => setFormData({ ...formData, price: Number(e.target.value) })}
+                  onChange={e => handlePriceChange(Number(e.target.value))}
                   className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-soft-gold"
                 />
               </div>
@@ -259,7 +298,7 @@ export default function ProductForm({ initialData }: ProductFormProps) {
                   type="number"
                   required
                   value={formData.originalPrice}
-                  onChange={e => setFormData({ ...formData, originalPrice: Number(e.target.value) })}
+                  onChange={e => handleOriginalPriceChange(Number(e.target.value))}
                   className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-soft-gold"
                 />
               </div>
@@ -268,7 +307,7 @@ export default function ProductForm({ initialData }: ProductFormProps) {
                 <input
                   type="number"
                   value={formData.discountRate}
-                  onChange={e => setFormData({ ...formData, discountRate: Number(e.target.value) })}
+                  onChange={e => handleDiscountRateChange(Number(e.target.value))}
                   className="w-full p-3 bg-gray-50 rounded-xl border-none focus:ring-2 focus:ring-soft-gold"
                 />
               </div>
