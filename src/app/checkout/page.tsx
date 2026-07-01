@@ -8,6 +8,12 @@ import { CheckCircle2, AlertCircle, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+declare global {
+  interface Window {
+    daum: any;
+  }
+}
+
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
   const router = useRouter();
@@ -18,16 +24,28 @@ export default function CheckoutPage() {
     recipient: '',
     phone: '',
     address: '',
+    detailAddress: '',
+    zipcode: '',
     memo: ''
   });
 
   useEffect(() => {
     setMounted(true);
-    // Redirect if cart is empty after mount
-    if (items.length === 0) {
-      // Small timeout to avoid redirecting during SSR mismatch, but logic relies on mount
-    }
-  }, [items]);
+    
+    // Load Daum Postcode script dynamically
+    const script = document.createElement('script');
+    script.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+    script.async = true;
+    document.body.appendChild(script);
+    
+    return () => {
+      // Clean up script on unmount
+      const existingScript = document.querySelector(`script[src="${script.src}"]`);
+      if (existingScript) {
+        document.body.removeChild(existingScript);
+      }
+    };
+  }, []);
 
   if (!mounted) return null;
 
@@ -48,8 +66,40 @@ export default function CheckoutPage() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleAddressSearch = () => {
+    if (window.daum && window.daum.Postcode) {
+      new window.daum.Postcode({
+        oncomplete: function(data: any) {
+          let fullAddress = data.roadAddress;
+          let extraAddress = '';
+          
+          if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+            extraAddress += data.bname;
+          }
+          if (data.buildingName !== '' && data.apartment === 'Y') {
+            extraAddress += (extraAddress !== '' ? ', ' + data.buildingName : data.buildingName);
+          }
+          fullAddress += (extraAddress !== '' ? ` (${extraAddress})` : '');
+          
+          setFormData(prev => ({
+            ...prev,
+            zipcode: data.zonecode,
+            address: fullAddress
+          }));
+        }
+      }).open();
+    } else {
+      alert('주소 검색 서비스를 로드하는 중입니다. 잠시 후 다시 시도해주세요.');
+    }
+  };
+
   const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const fullAddress = formData.zipcode 
+      ? `[${formData.zipcode}] ${formData.address} ${formData.detailAddress}`.trim()
+      : formData.address;
+
     if (!formData.recipient || !formData.phone || !formData.address) {
       alert('필수 배송지 정보를 모두 입력해주세요.');
       return;
@@ -62,7 +112,7 @@ export default function CheckoutPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          shippingAddress: formData.address,
+          shippingAddress: fullAddress,
           customerName: formData.recipient,
           customerPhone: formData.phone,
           items: items.map(item => ({
@@ -151,14 +201,41 @@ export default function CheckoutPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">배송 주소 *</label>
+                  <div className="flex gap-2 mb-2">
+                    <input 
+                      type="text" 
+                      name="zipcode"
+                      readOnly
+                      placeholder="우편번호"
+                      value={formData.zipcode}
+                      onClick={handleAddressSearch}
+                      className="w-32 p-3 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer focus:outline-none focus:border-deep-navy focus:ring-1 focus:ring-deep-navy text-center"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddressSearch}
+                      className="px-5 py-3 bg-deep-navy text-white font-medium rounded-xl text-sm hover:bg-deep-navy/90 transition-colors"
+                    >
+                      주소 검색
+                    </button>
+                  </div>
                   <input 
                     type="text" 
                     name="address"
+                    readOnly
                     required
+                    placeholder="기본 주소 (주소 검색을 완료해주세요)"
                     value={formData.address}
+                    onClick={handleAddressSearch}
+                    className="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer focus:outline-none mb-2"
+                  />
+                  <input 
+                    type="text" 
+                    name="detailAddress"
+                    placeholder="상세 주소 입력 (예: 101동 202호)"
+                    value={formData.detailAddress}
                     onChange={handleChange}
-                    className="w-full p-3 bg-gray-50 rounded-xl border border-gray-200 focus:border-deep-navy focus:ring-1 focus:ring-deep-navy transition-colors"
-                    placeholder="도로명 주소 또는 지번 주소"
+                    className="w-full p-3 bg-white rounded-xl border border-gray-200 focus:border-deep-navy focus:ring-1 focus:ring-deep-navy transition-colors"
                   />
                 </div>
 
