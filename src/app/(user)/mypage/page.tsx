@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Package, Truck, CheckCircle, ChevronRight, User } from 'lucide-react';
+import { Package, Truck, CheckCircle, ChevronRight, User, Star } from 'lucide-react';
 import { formatPrice } from '@/lib/mock-data';
 
 export default function MyPage() {
@@ -16,6 +16,13 @@ export default function MyPage() {
   const [requestTarget, setRequestTarget] = useState<{orderId: string, type: '교환' | '환불'} | null>(null);
   const [requestReason, setRequestReason] = useState('');
   const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
+
+  // Review State
+  const [reviewTarget, setReviewTarget] = useState<{productId: string, productName: string} | null>(null);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewContent, setReviewContent] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewedProducts, setReviewedProducts] = useState<Set<string>>(new Set());
 
   const handleSubmitRequest = async () => {
     if (!requestTarget || !requestReason.trim()) return;
@@ -46,6 +53,50 @@ export default function MyPage() {
     }
   };
 
+  const handleSubmitReview = async () => {
+    if (!reviewTarget || !reviewContent.trim() || !user) return;
+    setIsSubmittingReview(true);
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productId: reviewTarget.productId,
+          productName: reviewTarget.productName,
+          userName: user.name,
+          rating: reviewRating,
+          content: reviewContent,
+        }),
+      });
+      if (res.ok) {
+        alert('리뷰가 등록되었습니다! 감사합니다.');
+        setReviewedProducts(prev => new Set(prev).add(reviewTarget.productId));
+        setReviewTarget(null);
+        setReviewContent('');
+        setReviewRating(5);
+      } else {
+        alert('리뷰 등록에 실패했습니다.');
+      }
+    } catch (e) {
+      alert('오류가 발생했습니다.');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+
+  const fetchReviewedProducts = async (userName: string) => {
+    try {
+      const res = await fetch('/api/reviews');
+      if (res.ok) {
+        const reviews = await res.json();
+        const myReviews = reviews.filter((r: any) => r.userName === userName || r.customerName === userName);
+        setReviewedProducts(new Set(myReviews.map((r: any) => r.productId)));
+      }
+    } catch (e) {
+      // Ignore - just won't show "reviewed" badges
+    }
+  };
+
   useEffect(() => {
     // 1. Check User Session
     const getCookie = (name: string) => {
@@ -66,6 +117,7 @@ export default function MyPage() {
       const decoded = JSON.parse(decodedString);
       setUser(decoded);
       fetchOrders();
+      fetchReviewedProducts(decoded.name);
     } catch (e) {
       router.push('/login');
     }
@@ -190,6 +242,18 @@ export default function MyPage() {
                       </span>
                     </div>
 
+                    {/* Tracking Info */}
+                    {(order.status === '배송중' || order.status === '배송완료') && order.trackingNumber && (
+                      <div className="mb-6 p-3 bg-indigo-50 rounded-xl border border-indigo-100 flex items-center gap-3">
+                        <Truck className="w-5 h-5 text-indigo-500 shrink-0" />
+                        <div className="text-sm">
+                          <span className="font-semibold text-indigo-700">{order.courierName || '택배'}</span>
+                          <span className="mx-2 text-indigo-300">|</span>
+                          <span className="font-mono font-medium text-indigo-900">{order.trackingNumber}</span>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-6">
                       {order.items.map((item: any, index: number) => (
                         <div key={index} className="flex gap-4 md:gap-6">
@@ -199,11 +263,27 @@ export default function MyPage() {
                           <div className="flex-1 min-w-0">
                             <h4 className="text-base md:text-lg font-bold text-gray-900 truncate mb-1">{item.productName}</h4>
                             <div className="text-sm text-gray-500 mb-2">
-                              {Object.entries(item.options).map(([k, v]) => `${k}: ${v}`).join(' / ')}
+                              {item.options && Object.entries(item.options).map(([k, v]) => `${k}: ${v}`).join(' / ')}
                               <span className="mx-2">|</span>
                               {item.quantity}개
                             </div>
-                            <p className="text-lg font-bold text-deep-navy">{formatPrice(item.price)}</p>
+                            <div className="flex items-center gap-3">
+                              <p className="text-lg font-bold text-deep-navy">{formatPrice(item.price)}</p>
+                              {order.status === '배송완료' && (
+                                reviewedProducts.has(item.productId) ? (
+                                  <span className="text-xs font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-full border border-green-200 flex items-center gap-1">
+                                    <CheckCircle className="w-3 h-3" /> 리뷰 완료
+                                  </span>
+                                ) : (
+                                  <button
+                                    onClick={() => setReviewTarget({ productId: item.productId, productName: item.productName })}
+                                    className="text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 hover:bg-amber-100 transition-colors flex items-center gap-1"
+                                  >
+                                    <Star className="w-3 h-3" /> 리뷰 작성
+                                  </button>
+                                )
+                              )}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -302,6 +382,69 @@ export default function MyPage() {
                 className="px-5 py-2 bg-deep-navy text-white rounded-xl font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 flex items-center gap-2 text-sm"
               >
                 {isSubmittingRequest ? '신청 중...' : '신청하기'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Review Writing Modal */}
+      {reviewTarget && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl border border-gray-100">
+            <h3 className="text-lg font-bold text-gray-900 mb-1">리뷰 작성</h3>
+            <p className="text-gray-500 text-sm mb-5 truncate">{reviewTarget.productName}</p>
+            
+            {/* Star Rating */}
+            <label className="block text-sm font-semibold text-gray-700 mb-2">별점을 선택해 주세요</label>
+            <div className="flex gap-1 mb-5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setReviewRating(star)}
+                  className="p-0.5 transition-transform hover:scale-110"
+                >
+                  <Star
+                    className={`w-8 h-8 transition-colors ${
+                      star <= reviewRating
+                        ? 'text-amber-400 fill-amber-400'
+                        : 'text-gray-200'
+                    }`}
+                  />
+                </button>
+              ))}
+              <span className="ml-2 text-sm font-bold text-amber-600 self-center">{reviewRating}점</span>
+            </div>
+
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              리뷰 내용을 입력해 주세요
+            </label>
+            <textarea
+              value={reviewContent}
+              onChange={(e) => setReviewContent(e.target.value)}
+              placeholder="상품에 대한 솔직한 후기를 남겨주세요. (예: 착용감이 좋고 사이즈가 정확합니다.)"
+              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-300 outline-none text-sm resize-none mb-5"
+              rows={4}
+            />
+            
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setReviewTarget(null);
+                  setReviewContent('');
+                  setReviewRating(5);
+                }}
+                disabled={isSubmittingReview}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 text-sm"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleSubmitReview}
+                disabled={isSubmittingReview || !reviewContent.trim()}
+                className="px-5 py-2 bg-amber-500 text-white rounded-xl font-medium hover:bg-amber-600 transition-colors disabled:opacity-50 flex items-center gap-2 text-sm"
+              >
+                {isSubmittingReview ? '등록 중...' : '리뷰 등록'}
               </button>
             </div>
           </div>

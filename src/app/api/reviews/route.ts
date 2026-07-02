@@ -60,3 +60,35 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: error.message || 'Failed to update review' }, { status: 500 });
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { productId, productName, userName, rating, content } = body;
+
+    if (!productId || !productName || !userName || !rating || !content) {
+      return NextResponse.json({ error: '모든 필드를 입력해주세요.' }, { status: 400 });
+    }
+
+    const reviewId = `RV-${Date.now().toString().slice(-8)}`;
+
+    const { data, error } = await supabaseAdmin
+      .from('reviews')
+      .insert({
+        id: reviewId,
+        product_id: productId,
+        product_name: productName,
+        user_name: userName,
+        rating: Math.min(5, Math.max(1, Number(rating))),
+        content,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, review: mapReview(data) }, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Failed to create review' }, { status: 500 });
+  }
+}
